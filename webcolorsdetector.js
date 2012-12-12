@@ -22,7 +22,7 @@ function loadjQueryUI(){
 	var s = document.createElement('link');
 	s.type = 'text/css';
 	s.rel = 'stylesheet';
-	s.href = 'https://github.com/dixkom/webcolorsdetector/blob/master/jquery-ui.css';
+	s.href = 'https://raw.github.com/dixkom/webcolorsdetector/master/jquery-ui.css';
 	s.media = 'screen';
 	document.getElementsByTagName('head')[0].appendChild(s);
 }
