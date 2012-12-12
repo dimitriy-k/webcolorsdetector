@@ -18,7 +18,6 @@ function loadjQueryUI(){
 	s.type = 'text/css';
 	s.rel = 'stylesheet';
 	s.href = 'https://raw.github.com/dixkom/webcolorsdetector/master/jquery-ui.css';
-	s.media = 'screen';
 	s.addEventListener('load', function (e) { 
 		var n=document.createElement('script');
 		n.setAttribute('language','JavaScript');
