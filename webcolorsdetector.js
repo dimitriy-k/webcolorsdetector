@@ -13,17 +13,18 @@ if(typeof jQuery=='undefined'){
 
 function loadjQueryUI(){
 	console.log('loading jQuery UI');
-	
-	var n=document.createElement('script');
-	n.setAttribute('language','JavaScript');
-	n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
-	document.body.appendChild(n);
 
 	var s = document.createElement('link');
 	s.type = 'text/css';
 	s.rel = 'stylesheet';
 	s.href = 'https://raw.github.com/dixkom/webcolorsdetector/master/jquery-ui.css';
 	s.media = 'screen';
+	s.addEventListener('load', function (e) { 
+		var n=document.createElement('script');
+		n.setAttribute('language','JavaScript');
+		n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
+		document.body.appendChild(n);
+	}, false);
 	document.getElementsByTagName('head')[0].appendChild(s);
 }
 
