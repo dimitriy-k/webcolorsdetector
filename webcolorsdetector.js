@@ -4,7 +4,7 @@ if(typeof jQuery=='undefined'){
 	var n=document.createElement('script');
 	n.setAttribute('type','text/javascript');
 	n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
-	document.body.appendChild(n);
+	document.getElementsByTagName('head')[0].appendChild(n);
 		
 	loadjQueryUI();
 }else if(typeof jQuery.ui=='undefined'){
@@ -22,7 +22,7 @@ function loadjQueryUI(){
 		var n=document.createElement('script');
 		n.setAttribute('language','JavaScript');
 		n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
-		document.body.appendChild(n);
+		document.getElementsByTagName('head')[0].appendChild(n);
 	}, false);
 	document.getElementsByTagName('head')[0].appendChild(s);
 }
