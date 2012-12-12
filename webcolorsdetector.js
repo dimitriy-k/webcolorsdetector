@@ -5,6 +5,21 @@ var wcd_loader = new function(){
 	this.query = 0;
 	
 	this.init = function(){
+		var l = document.createElement( 'div' );
+		l.style.position = 'absolute';
+		l.style.top = '0';
+		l.style.left = '0';
+		l.style.color = 'white';
+		l.style.padding = '5px 10px';
+		l.style.fontSize = '11px';
+		l.style.zIndex = '999999';
+		l.style.backgroundColor = '#333';
+		l.style.border = '1px solid #fff'
+		l.setAttribute( 'id', 'wcd_loader' );
+		l.innerHTML ='Loading WebColorsDetector, please wait...';
+		
+		document.getElementsByTagName('body')[0].insertBefore(l, document.body.childNodes[0] );
+			
 		if(typeof jQuery=='undefined'){
 			console.log('loading jQuery');
 			this.query++;
@@ -45,7 +60,12 @@ var wcd_loader = new function(){
 	};
 	
 	this.done = function(){
-		return (this.query == 0)?true:false;
+		if(this.query == 0){
+			$('#wcd_loader').remove();
+			return true;
+		}
+		
+		return false;
 	}
 }
 
@@ -189,9 +209,6 @@ var wcd = new function() {
 						<div style="float: left;padding:10px"><h3>Border ('+border.length+')</h3>'+border.join("")+'</div> \
 						<div style="float: left;padding:10px"><h3>All ('+all.length+')</h3><div class="sortable">'+all.join("")+"</div></div>";
 
-	
-	
-		console.log("open dialog")
 		$('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
