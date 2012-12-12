@@ -179,7 +179,10 @@ var wcd = new function() {
 		var border = this.mapArray(this.colorsBorder);
 		var all = this.mapArray(this.colorsAll);
 		
-		var html = '<div><input type="text" id="color" ><input type="button" onclick="wcd.findColor()" value="Find" ><input type="button" onclick="$(\'#foundedElements\').html(\'\')" value="Clean" ><input type="checkbox" name="wcd_log" id="wcd_log" checked="checked">enable console.log</div><hr /> \
+		var html = '<div><input type="text" id="color" style="display:inline-block;margin:2px"> \
+				<input type="button" onclick="wcd.findColor()" value="Find"  style="display:inline-block;margin:2px"> \
+				<input type="button" onclick="$(\'#foundedElements\').html(\'\')" value="Clean"  style="display:inline-block;margin:2px"> \
+				<input type="checkbox" name="wcd_log" id="wcd_log" checked="checked" style="display:inline-block;margin:2px">enable console.log</div><hr /> \
 						<div id="foundedElements" style="overflow: auto; max-height: 250px;"></div> \
 						<div style="float: left;padding:10px"><h3>Text ('+text.length+')</h3>'+text.join("")+'</div> \
 						<div style="float: left;padding:10px;"><h3>Background ('+back.length+')</h3>'+back.join("")+'</div> \
