@@ -2,7 +2,7 @@
 if(typeof jQuery=='undefined'){
   console.log('loading jQuery');
 	var n=document.createElement('script');
-	n.setAttribute('language','JavaScript');
+	n.setAttribute('type','text/javascript');
 	n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
 	document.body.appendChild(n);
 		
