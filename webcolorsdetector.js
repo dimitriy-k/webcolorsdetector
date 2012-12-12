@@ -189,7 +189,7 @@ var wcd = new function() {
 	
 	
 		console.log("open dialog")
-		$('<div id="wcd_dialog"><span class="md_loading" /></div>')
+		$('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
