@@ -1,30 +1,32 @@
-// TODO separate jquery and jquery ui
 if(typeof jQuery=='undefined'){
-  console.log('loading jQuery');
+	console.log('loading jQuery');
+	
 	var n=document.createElement('script');
 	n.setAttribute('type','text/javascript');
 	n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+	n.addEventListener('load', function (e) { 
+		if(typeof jQuery.ui=='undefined') loadjQueryUI();
+	});
 	document.getElementsByTagName('head')[0].appendChild(n);
-		
-	loadjQueryUI();
+	
 }else if(typeof jQuery.ui=='undefined'){
 	loadjQueryUI();
 }
 
 function loadjQueryUI(){
+	if(typeof jQuery.ui!='undefined') return;
 	console.log('loading jQuery UI');
-
-	var s = document.createElement('link');
-	s.type = 'text/css';
-	s.rel = 'stylesheet';
-	s.href = 'https://raw.github.com/dixkom/webcolorsdetector/master/jquery-ui.css';
-	s.addEventListener('load', function (e) { 
-		var n=document.createElement('script');
-		n.setAttribute('language','JavaScript');
-		n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
-		document.getElementsByTagName('head')[0].appendChild(n);
-	}, false);
-	document.getElementsByTagName('head')[0].appendChild(s);
+	
+	// load jquery ui css
+	
+	if (document.createStyleSheet){
+      document.createStyleSheet('http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css');
+   }else{
+		$("head").append($("<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css' type='text/css' media='screen' />"));
+   }
+	
+	// load jquery ui js
+	$.getScript("//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js", function(data, textStatus, jqxhr) {});
 }
 
 /* =============== DEBUG page colors =============== */
@@ -155,6 +157,7 @@ var debug_pageColors = new function() {
 
 	
 	
+		console.log("open dialog")
 		$('<div class="modalDialog"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
