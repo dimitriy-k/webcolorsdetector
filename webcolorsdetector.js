@@ -34,7 +34,7 @@ var debug_pageColors = new function() {
 	this.colorsBackground = new Array();
 	this.colorsBorder = new Array();
 	this.colorsAll = new Array();
-	this.browserColors = ['#000000',"#808080",'#000', // default browser colors
+	this.browserColors = ['#000000',"#808080",'#000','#0000ee', // default browser colors
 							'#000080','#d4d0c8']; // FF specific
 	
 	this.init = function(debugBox){
