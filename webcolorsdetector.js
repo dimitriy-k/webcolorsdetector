@@ -20,7 +20,7 @@ function loadjQueryUI(){
 	// load jquery ui css
 	
 	if (document.createStyleSheet){
-      document.createStyleSheet('http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css');
+      document.createStyleSheet('//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css');
    }else{
 		$("head").append($("<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css' type='text/css' media='screen' />"));
    }
