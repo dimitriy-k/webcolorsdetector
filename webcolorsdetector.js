@@ -1,37 +1,59 @@
-if(typeof jQuery=='undefined'){
-	console.log('loading jQuery');
+var wcd_loader = new function(){
+	this.jqueryURL = "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";
+	this.jqueryUiURL = "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js";
+	this.jqueryUiCssURL = "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css";
+	this.query = 0;
 	
-	var n=document.createElement('script');
-	n.setAttribute('type','text/javascript');
-	n.setAttribute('src','//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
-	n.addEventListener('load', function (e) { 
-		if(typeof jQuery.ui=='undefined') loadjQueryUI();
-	});
-	document.getElementsByTagName('head')[0].appendChild(n);
+	this.init = function(){
+		if(typeof jQuery=='undefined'){
+			console.log('loading jQuery');
+			this.query++;
+			var self = this;
+			
+			
+			var n=document.createElement('script');
+			n.setAttribute('type','text/javascript');
+			n.setAttribute('src',this.jqueryURL);
+			n.addEventListener('load', function (e) { 
+				self.query--;
+				if(typeof jQuery.ui=='undefined')self.loadjQueryUI();
+			});
+			document.getElementsByTagName('head')[0].appendChild(n);
+			
+		}else if(typeof jQuery.ui=='undefined'){
+			this.loadjQueryUI();
+		}
+	};
 	
-}else if(typeof jQuery.ui=='undefined'){
-	loadjQueryUI();
+	this.loadjQueryUI = function() {
+		if(typeof jQuery.ui!='undefined') return;
+		console.log('loading jQuery UI');
+		this.query++;
+		var self = this;
+		
+		// load jquery ui css
+		if (document.createStyleSheet){
+			document.createStyleSheet(this.jqueryUiCssURL);
+		}else{
+			$("head").append($('<link rel="stylesheet" href="'+this.jqueryUiCssURL+'" type="text/css" media="screen" />'));
+		}
+		
+		// load jquery ui js
+		$.getScript(this.jqueryUiURL, function(data, textStatus, jqxhr) {
+			self.query--;
+		});
+	};
+	
+	this.done = function(){
+		return (this.query == 0)?true:false;
+	}
 }
 
-function loadjQueryUI(){
-	if(typeof jQuery.ui!='undefined') return;
-	console.log('loading jQuery UI');
-	
-	// load jquery ui css
-	
-	if (document.createStyleSheet){
-      document.createStyleSheet('//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css');
-   }else{
-		$("head").append($("<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css' type='text/css' media='screen' />"));
-   }
-	
-	// load jquery ui js
-	$.getScript("//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js", function(data, textStatus, jqxhr) {});
-}
+wcd_loader.init();
 
 /* =============== DEBUG page colors =============== */
 
-var debug_pageColors = new function() {
+var wcd = new function() {
 	this.colorsText = new Array();
 	this.colorsBackground = new Array();
 	this.colorsBorder = new Array();
@@ -39,31 +61,39 @@ var debug_pageColors = new function() {
 	this.browserColors = ['#000000',"#808080",'#000','#0000ee', // default browser colors
 							'#000080','#d4d0c8']; // FF specific
 	
-	this.init = function(debugBox){
-		var me = this;
-		if(typeof jQuery!='undefined' && typeof jQuery.ui!='undefined'){
+	this.init = function(){
+		var self = this;
+		if(typeof wcd_loader!='undefined' && wcd_loader.done()){
 			
 			this.printColors();
 		}else{ 
-			setTimeout(function(){me.init()},500);
+			setTimeout(function(){self.init()},500);
+		}
+	};
+	
+	this.reload = function(){
+		$('#wcd_dialog').dialog('close');
+		
+		if(wcd_loader.done()){	
+			this.printColors();
 		}
 	};
 	
 	this.forEachChildren = function(el){
 		if($(el).hasClass("debugElement")) return;
 		
-		var me = this;
+		var self = this;
 		$.each($(el).children(), function(index, element){
 			try{			
-				me.addColor(me.rgb2hex($(element).css("color")),me.colorsText);
-				me.addColor(me.rgb2hex($(element).css("backgroundColor")),me.colorsBackground);
-				if($(element).css("background-image") != null && $(element).css("background-image").indexOf("-gradient") != -1)me.addColor($(element).css("background-image"), me.colorsBackground);
-				me.addColor(me.rgb2hex($(element).css("border-top-color")),me.colorsBorder);
-				me.addColor(me.rgb2hex($(element).css("border-right-color")),me.colorsBorder);
-				me.addColor(me.rgb2hex($(element).css("border-bottom-color")),me.colorsBorder);
-				me.addColor(me.rgb2hex($(element).css("border-left-color")),me.colorsBorder);
+				self.addColor(self.rgb2hex($(element).css("color")),self.colorsText);
+				self.addColor(self.rgb2hex($(element).css("backgroundColor")),self.colorsBackground);
+				if($(element).css("background-image") != null && $(element).css("background-image").indexOf("-gradient") != -1)self.addColor($(element).css("background-image"), self.colorsBackground);
+				self.addColor(self.rgb2hex($(element).css("border-top-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex($(element).css("border-right-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex($(element).css("border-bottom-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex($(element).css("border-left-color")),self.colorsBorder);
 				if($(element).children().length > 0){
-					me.forEachChildren(element);
+					self.forEachChildren(element);
 				}
 			}catch (err){
 				alert('Er is een fout opgetreden. Gebruikt u Internet Explorer? Probeer dan een fatsoenlijke browser. <br><br>'+err);
@@ -91,11 +121,11 @@ var debug_pageColors = new function() {
 	};
 	
 	this.mapArray = function(arr){
-		var me = this;
+		var self = this;
 		return $.map(arr, function (a) { 
 			  var lable = a
 			  if(!a.indexOf("#")==0) lable = '<font color="maroon">gradient</font>';
-			  if($.inArray(a.toString(),me.browserColors) >= 0) lable = '<font color="SteelBlue">'+a+'</font>';
+			  if($.inArray(a.toString(),self.browserColors) >= 0) lable = '<font color="SteelBlue">'+a+'</font>';
 
 			  return '<div style="margin-bottom: 2px"><span style="width: 70px;line-height: 20px;float: left;">'+lable+'</span><span style="width: 100px; height: 20px; display: inline-block; background: '+a+'" onclick="$(\'#color\').val(\''+a+'\')"></span></div>'; 
 			});
@@ -103,25 +133,26 @@ var debug_pageColors = new function() {
 	
 	this.findColor = function(){
 		$("#foundedElements").html("");
-		this.forEachChildrenFindColor($("body"), $("#color").val());
+		this.forEachChildrenFindColor($("body"), $("#color").val(),$("#wcd_log").is(":checked"));
 		$("#foundedElements").prepend('<p style="color: gray">'+$("#foundedElements br").length+" elements found</p>").append("<hr/>");
 	};
 	
-	this.forEachChildrenFindColor = function(el, color){
+	this.forEachChildrenFindColor = function(el, color, log){
 		if($(el).hasClass("debugElement")) return;
-		var me = this;
+		var self = this;
 		$.each($(el).children(), function(index, element){
 			try{
 				var found = [];
-				if(me.rgb2hex($(element).css("color")) == color)found[found.length] = "color";
-				if(me.rgb2hex($(element).css("backgroundColor")) == color)found[found.length] = "backgroundColor";
+				if(self.rgb2hex($(element).css("color")) == color)found[found.length] = "color";
+				if(self.rgb2hex($(element).css("backgroundColor")) == color)found[found.length] = "backgroundColor";
 				if($(element).css("background-image").indexOf("-gradient") != -1 && $(element).css("background-image") == color)found[found.length] = "gradient";
-				if(me.rgb2hex($(element).css("border-top-color")) == color) found[found.length] = "border-top-color";
-				if(me.rgb2hex($(element).css("border-right-color")) == color)found[found.length] = "border-right-color";
-				if(me.rgb2hex($(element).css("border-bottom-color")) == color)found[found.length] = "border-bottom-color";
-				if(me.rgb2hex($(element).css("border-left-color")) == color)found[found.length] = "border-left-color";
+				if(self.rgb2hex($(element).css("border-top-color")) == color) found[found.length] = "border-top-color";
+				if(self.rgb2hex($(element).css("border-right-color")) == color)found[found.length] = "border-right-color";
+				if(self.rgb2hex($(element).css("border-bottom-color")) == color)found[found.length] = "border-bottom-color";
+				if(self.rgb2hex($(element).css("border-left-color")) == color)found[found.length] = "border-left-color";
 				if(found.length > 0){
-					console.log(element);
+					if(log)console.log(element);
+					
 					var result = found.join(", ");
 					result = result.replace("border-top-color, border-right-color, border-bottom-color, border-left-color", "border");
 					
@@ -132,7 +163,7 @@ var debug_pageColors = new function() {
 				}
 				
 				if($(element).children().length > 0){
-					me.forEachChildrenFindColor(element,color);
+					self.forEachChildrenFindColor(element,color,log);
 				}
 			}catch (err){
 				alert('Er is een fout opgetreden. Gebruikt u Internet Explorer? Probeer dan een fatsoenlijke browser. <br><br>'+err);
@@ -148,8 +179,8 @@ var debug_pageColors = new function() {
 		var border = this.mapArray(this.colorsBorder);
 		var all = this.mapArray(this.colorsAll);
 		
-		var html = '<div><input type="text" id="color" ><input type="button" onclick="debug_pageColors.findColor()" value="Find" ><input type="button" onclick="$(\'#foundedElements\').html(\'\')" value="Clean" ></div><hr /> \
-						<div id="foundedElements"></div> \
+		var html = '<div><input type="text" id="color" ><input type="button" onclick="wcd.findColor()" value="Find" ><input type="button" onclick="$(\'#foundedElements\').html(\'\')" value="Clean" ><input type="checkbox" name="wcd_log" id="wcd_log" checked="checked">enable console.log</div><hr /> \
+						<div id="foundedElements" style="overflow: auto; max-height: 250px;"></div> \
 						<div style="float: left;padding:10px"><h3>Text ('+text.length+')</h3>'+text.join("")+'</div> \
 						<div style="float: left;padding:10px;"><h3>Background ('+back.length+')</h3>'+back.join("")+'</div> \
 						<div style="float: left;padding:10px"><h3>Border ('+border.length+')</h3>'+border.join("")+'</div> \
@@ -158,7 +189,7 @@ var debug_pageColors = new function() {
 	
 	
 		console.log("open dialog")
-		$('<div class="modalDialog"><span class="md_loading" /></div>')
+		$('<div id="wcd_dialog"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
@@ -174,16 +205,11 @@ var debug_pageColors = new function() {
 					close: function(event,ui){
 						$(this).remove()
 					}			
-			});
-		
-	
-	
-	
-	
+			});	
 	}
   };
 
 
   
- debug_pageColors.init();
+ wcd.init();
   
