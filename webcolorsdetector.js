@@ -5,23 +5,18 @@ var wcd_loader = new function(){
 	this.query = 0;
 	
 	this.init = function(){
-		var l = document.createElement( 'div' );
-		l.style.position = 'absolute';
-		l.style.top = '0';
-		l.style.left = '0';
-		l.style.color = 'white';
-		l.style.padding = '5px 10px';
-		l.style.fontSize = '11px';
-		l.style.zIndex = '999999';
-		l.style.backgroundColor = '#333';
-		l.style.border = '1px solid #fff'
-		l.setAttribute( 'id', 'wcd_loader' );
-		l.innerHTML ='Loading WebColorsDetector, please wait...';
+		this.showFeedback('Loading WebColorsDetector, please wait...')
+		console.log('jquery version: '+jQuery.fn.jquery);
 		
-		document.getElementsByTagName('body')[0].insertBefore(l, document.body.childNodes[0] );
-			
-		if(typeof jQuery=='undefined'){
-			console.log('loading jQuery');
+		var jQueryNeeded = true;
+		if(typeof jQuery!='undefined'){
+			jQuery.noConflict();
+			var jqueryVersion = jQuery.fn.jquery.replace(/\D/g,'');
+			if(parseInt(jqueryVersion) > 180)jQueryNeeded = false;
+		}
+		
+		if(jQueryNeeded){
+			console.log('loading jQuery 1.8.3');
 			this.query++;
 			var self = this;
 			
@@ -40,6 +35,27 @@ var wcd_loader = new function(){
 		}
 	};
 	
+	this.showFeedback = function(text){
+		var l = document.createElement( 'div' );
+		l.style.position = 'absolute';
+		l.style.top = '0';
+		l.style.left = '0';
+		l.style.color = 'white';
+		l.style.padding = '5px 10px';
+		l.style.fontSize = '11px';
+		l.style.zIndex = '999999';
+		l.style.backgroundColor = '#333';
+		l.style.border = '1px solid #fff'
+		l.setAttribute( 'id', 'wcd_loader' );
+		l.innerHTML =text;
+		
+		document.getElementsByTagName('body')[0].insertBefore(l, document.body.childNodes[0] );
+	};
+	
+	this.removeFeedback = function(){
+		jQuery('#wcd_loader').remove();
+	};
+	
 	this.loadjQueryUI = function() {
 		if(typeof jQuery.ui!='undefined') return;
 		console.log('loading jQuery UI');
@@ -50,18 +66,18 @@ var wcd_loader = new function(){
 		if (document.createStyleSheet){
 			document.createStyleSheet(this.jqueryUiCssURL);
 		}else{
-			$("head").append($('<link rel="stylesheet" href="'+this.jqueryUiCssURL+'" type="text/css" media="screen" />'));
+			jQuery("head").append(jQuery('<link rel="stylesheet" href="'+this.jqueryUiCssURL+'" type="text/css" media="screen" />'));
 		}
 		
 		// load jquery ui js
-		$.getScript(this.jqueryUiURL, function(data, textStatus, jqxhr) {
+		jQuery.getScript(this.jqueryUiURL, function(data, textStatus, jqxhr) {
 			self.query--;
 		});
 	};
 	
 	this.done = function(){
 		if(this.query == 0){
-			$('#wcd_loader').remove();
+			this.removeFeedback();
 			return true;
 		}
 		
@@ -92,7 +108,7 @@ var wcd = new function() {
 	};
 	
 	this.reload = function(){
-		$('#wcd_dialog').dialog('close');
+		jQuery('#wcd_dialog').dialog('close');
 		
 		if(wcd_loader.done()){	
 			this.printColors();
@@ -100,23 +116,23 @@ var wcd = new function() {
 	};
 	
 	this.forEachChildren = function(el){
-		if($(el).hasClass("debugElement")) return;
+		if(jQuery(el).hasClass("debugElement")) return;
 		
 		var self = this;
-		$.each($(el).children(), function(index, element){
+		jQuery.each(jQuery(el).children(), function(index, element){
 			try{			
-				self.addColor(self.rgb2hex($(element).css("color")),self.colorsText);
-				self.addColor(self.rgb2hex($(element).css("backgroundColor")),self.colorsBackground);
-				if($(element).css("background-image") != null && $(element).css("background-image").indexOf("-gradient") != -1)self.addColor($(element).css("background-image"), self.colorsBackground);
-				self.addColor(self.rgb2hex($(element).css("border-top-color")),self.colorsBorder);
-				self.addColor(self.rgb2hex($(element).css("border-right-color")),self.colorsBorder);
-				self.addColor(self.rgb2hex($(element).css("border-bottom-color")),self.colorsBorder);
-				self.addColor(self.rgb2hex($(element).css("border-left-color")),self.colorsBorder);
-				if($(element).children().length > 0){
+				self.addColor(self.rgb2hex(jQuery(element).css("color")),self.colorsText);
+				self.addColor(self.rgb2hex(jQuery(element).css("backgroundColor")),self.colorsBackground);
+				if(jQuery(element).css("background-image") != null && jQuery(element).css("background-image").indexOf("-gradient") != -1)self.addColor(jQuery(element).css("background-image"), self.colorsBackground);
+				self.addColor(self.rgb2hex(jQuery(element).css("border-top-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex(jQuery(element).css("border-right-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex(jQuery(element).css("border-bottom-color")),self.colorsBorder);
+				self.addColor(self.rgb2hex(jQuery(element).css("border-left-color")),self.colorsBorder);
+				if(jQuery(element).children().length > 0){
 					self.forEachChildren(element);
 				}
 			}catch (err){
-				alert('Er is een fout opgetreden. Gebruikt u Internet Explorer? Probeer dan een fatsoenlijke browser. <br><br>'+err);
+				wcd_loader.showFeedback('Error found:<br><br>'+err);
 			}
 		});
 	};
@@ -133,66 +149,66 @@ var wcd = new function() {
 	this.addColor = function(color, arr){
 		if(color == "null" || color == null) return; // for FF
 		
-		if($.inArray(color,arr) == -1)
+		if(jQuery.inArray(color,arr) == -1)
 			arr[arr.length] = color;
 			
-		if($.inArray(color,this.colorsAll) == -1)
+		if(jQuery.inArray(color,this.colorsAll) == -1)
 			this.colorsAll[this.colorsAll.length] = color;
 	};
 	
 	this.mapArray = function(arr){
 		var self = this;
-		return $.map(arr, function (a) { 
+		return jQuery.map(arr, function (a) { 
 			  var lable = a
 			  if(!a.indexOf("#")==0) lable = '<font color="maroon">gradient</font>';
-			  if($.inArray(a.toString(),self.browserColors) >= 0) lable = '<font color="SteelBlue">'+a+'</font>';
+			  if(jQuery.inArray(a.toString(),self.browserColors) >= 0) lable = '<font color="SteelBlue">'+a+'</font>';
 
-			  return '<div style="margin-bottom: 2px"><span style="width: 70px;line-height: 20px;float: left;">'+lable+'</span><span style="width: 100px; height: 20px; display: inline-block; background: '+a+'" onclick="$(\'#color\').val(\''+a+'\')"></span></div>'; 
+			  return '<div style="margin-bottom: 2px"><span style="width: 70px;line-height: 20px;float: left;">'+lable+'</span><span style="width: 100px; height: 20px; display: inline-block; background: '+a+'" onclick="jQuery(\'#color\').val(\''+a+'\')"></span></div>'; 
 			});
 	};
 	
 	this.findColor = function(){
-		$("#foundedElements").html("");
-		this.forEachChildrenFindColor($("body"), $("#color").val(),$("#wcd_log").is(":checked"));
-		$("#foundedElements").prepend('<p style="color: gray">'+$("#foundedElements br").length+" elements found</p>").append("<hr/>");
+		jQuery("#foundedElements").html("");
+		this.forEachChildrenFindColor(jQuery("body"), jQuery("#color").val(),jQuery("#wcd_log").is(":checked"));
+		jQuery("#foundedElements").prepend('<p style="color: gray; margin: 5px 0;">'+jQuery("#foundedElements br").length+" elements found</p>").append("<hr/>");
 	};
 	
 	this.forEachChildrenFindColor = function(el, color, log){
-		if($(el).hasClass("debugElement")) return;
+		if(jQuery(el).hasClass("debugElement")) return;
 		var self = this;
-		$.each($(el).children(), function(index, element){
+		jQuery.each(jQuery(el).children(), function(index, element){
 			try{
 				var found = [];
-				if(self.rgb2hex($(element).css("color")) == color)found[found.length] = "color";
-				if(self.rgb2hex($(element).css("backgroundColor")) == color)found[found.length] = "backgroundColor";
-				if($(element).css("background-image").indexOf("-gradient") != -1 && $(element).css("background-image") == color)found[found.length] = "gradient";
-				if(self.rgb2hex($(element).css("border-top-color")) == color) found[found.length] = "border-top-color";
-				if(self.rgb2hex($(element).css("border-right-color")) == color)found[found.length] = "border-right-color";
-				if(self.rgb2hex($(element).css("border-bottom-color")) == color)found[found.length] = "border-bottom-color";
-				if(self.rgb2hex($(element).css("border-left-color")) == color)found[found.length] = "border-left-color";
+				if(self.rgb2hex(jQuery(element).css("color")) == color)found[found.length] = "color";
+				if(self.rgb2hex(jQuery(element).css("backgroundColor")) == color)found[found.length] = "backgroundColor";
+				if(jQuery(element).css("background-image").indexOf("-gradient") != -1 && jQuery(element).css("background-image") == color)found[found.length] = "gradient";
+				if(self.rgb2hex(jQuery(element).css("border-top-color")) == color) found[found.length] = "border-top-color";
+				if(self.rgb2hex(jQuery(element).css("border-right-color")) == color)found[found.length] = "border-right-color";
+				if(self.rgb2hex(jQuery(element).css("border-bottom-color")) == color)found[found.length] = "border-bottom-color";
+				if(self.rgb2hex(jQuery(element).css("border-left-color")) == color)found[found.length] = "border-left-color";
 				if(found.length > 0){
 					if(log)console.log(element);
 					
 					var result = found.join(", ");
 					result = result.replace("border-top-color, border-right-color, border-bottom-color, border-left-color", "border");
 					
-					$("#foundedElements").append("<b>&lt;"+$(element).prop("tagName")+"</b>"+
+					jQuery("#foundedElements").append("<b>&lt;"+jQuery(element).attr("tagName")+"</b>"+
 												((element.id.length > 0)?" <b>id</b>='"+element.id+"'":"")
-												+(($(element).prop("class").length > 0)?" <b>class</b>='"+$(element).prop("class")+"'":"")
+												+((jQuery(element).attr("class").length > 0)?" <b>class</b>='"+jQuery(element).attr("class")+"'":"")
 												+'<b>&gt;</b><font color="MidnightBlue"> '+result+"</font><br/>");
 				}
 				
-				if($(element).children().length > 0){
+				if(jQuery(element).children().length > 0){
 					self.forEachChildrenFindColor(element,color,log);
 				}
 			}catch (err){
-				alert('Er is een fout opgetreden. Gebruikt u Internet Explorer? Probeer dan een fatsoenlijke browser. <br><br>'+err);
+				wcd_loader.showFeedback('Error found:<br><br>'+err);
 			}
 		});
 	};
 	
 	this.printColors = function(){
-		this.forEachChildren($("body"));
+		this.forEachChildren(jQuery("body"));
 
 		var text = this.mapArray(this.colorsText);
 		var back = this.mapArray(this.colorsBackground);
@@ -201,15 +217,15 @@ var wcd = new function() {
 		
 		var html = '<div><input type="text" id="color" style="display:inline-block;margin:2px"> \
 				<input type="button" onclick="wcd.findColor()" value="Find"  style="display:inline-block;margin:2px"> \
-				<input type="button" onclick="$(\'#foundedElements\').html(\'\')" value="Clean"  style="display:inline-block;margin:2px"> \
-				<input type="checkbox" name="wcd_log" id="wcd_log" checked="checked" style="display:inline-block;margin:2px">enable console.log</div><hr /> \
+				<input type="button" onclick="jQuery(\'#foundedElements\').html(\'\')" value="Clean"  style="display:inline-block;margin:2px"> \
+				<div style="display:inline-block"><input type="checkbox" name="wcd_log" id="wcd_log" checked="checked" style="display:inline-block;margin:2px">enable console.log</div></div><hr /> \
 						<div id="foundedElements" style="overflow: auto; max-height: 250px;"></div> \
-						<div style="float: left;padding:10px"><h3>Text ('+text.length+')</h3>'+text.join("")+'</div> \
-						<div style="float: left;padding:10px;"><h3>Background ('+back.length+')</h3>'+back.join("")+'</div> \
-						<div style="float: left;padding:10px"><h3>Border ('+border.length+')</h3>'+border.join("")+'</div> \
-						<div style="float: left;padding:10px"><h3>All ('+all.length+')</h3><div class="sortable">'+all.join("")+"</div></div>";
+						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">Text ('+text.length+')</h3>'+text.join("")+'</div> \
+						<div style="float: left;padding:10px;"><h3 style="margin: 10px 0;">Background ('+back.length+')</h3>'+back.join("")+'</div> \
+						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">Border ('+border.length+')</h3>'+border.join("")+'</div> \
+						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">All ('+all.length+')</h3><div class="sortable">'+all.join("")+"</div></div>";
 
-		$('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;"><span class="md_loading" /></div>')
+		jQuery('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
@@ -217,13 +233,13 @@ var wcd = new function() {
 					width: 800,
 					dialogClass: 'debugElement',
 					open: function(){
-						$(this).html(html);
-						$('.sortable').sortable();
+						jQuery(this).html(html);
+						jQuery('.sortable').sortable();
 						
-						$(this).dialog("option", "position", 'center' );
+						jQuery(this).dialog("option", "position", 'center' );
 					},
 					close: function(event,ui){
-						$(this).remove()
+						jQuery(this).remove()
 					}			
 			});	
 	}
