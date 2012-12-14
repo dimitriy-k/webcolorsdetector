@@ -6,13 +6,13 @@ var wcd_loader = new function(){
 	
 	this.init = function(){
 		this.showFeedback('Loading WebColorsDetector, please wait...')
-		console.log('jquery version: '+jQuery.fn.jquery);
-		
+
 		var jQueryNeeded = true;
 		if(typeof jQuery!='undefined'){
-			jQuery.noConflict();
+			console.log('jquery version: '+jQuery.fn.jquery);
+		
 			var jqueryVersion = jQuery.fn.jquery.replace(/\D/g,'');
-			if(parseInt(jqueryVersion) > 180)jQueryNeeded = false;
+			if(parseInt(jqueryVersion) > 143)jQueryNeeded = false; // works in 1.4.4,  not 1.3.2, 1.4.2
 		}
 		
 		if(jQueryNeeded){
@@ -192,9 +192,9 @@ var wcd = new function() {
 					var result = found.join(", ");
 					result = result.replace("border-top-color, border-right-color, border-bottom-color, border-left-color", "border");
 					
-					jQuery("#foundedElements").append("<b>&lt;"+jQuery(element).attr("tagName")+"</b>"+
+					jQuery("#foundedElements").append("<b>&lt;"+jQuery(element)[0].nodeName+"</b>"+
 												((element.id.length > 0)?" <b>id</b>='"+element.id+"'":"")
-												+((jQuery(element).attr("class").length > 0)?" <b>class</b>='"+jQuery(element).attr("class")+"'":"")
+												+((jQuery(element).attr("class"))?" <b>class</b>='"+jQuery(element).attr("class")+"'":"")
 												+'<b>&gt;</b><font color="MidnightBlue"> '+result+"</font><br/>");
 				}
 				
@@ -225,7 +225,7 @@ var wcd = new function() {
 						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">Border ('+border.length+')</h3>'+border.join("")+'</div> \
 						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">All ('+all.length+')</h3><div class="sortable">'+all.join("")+"</div></div>";
 
-		jQuery('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;"><span class="md_loading" /></div>')
+		jQuery('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;z-index:99999999999999"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
