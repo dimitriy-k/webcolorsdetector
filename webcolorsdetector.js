@@ -26,11 +26,11 @@ var wcd_loader = new function(){
 			n.setAttribute('src',this.jqueryURL);
 			n.addEventListener('load', function (e) { 
 				self.query--;
-				if(typeof jQuery.ui=='undefined')self.loadjQueryUI();
+				if(typeof jQuery.ui=='undefined' && typeof jQuery.ui.dialog=='undefined')self.loadjQueryUI();
 			});
 			document.getElementsByTagName('head')[0].appendChild(n);
 			
-		}else if(typeof jQuery.ui=='undefined'){
+		}else if(typeof jQuery.ui=='undefined' && typeof jQuery.ui.dialog=='undefined')) {
 			this.loadjQueryUI();
 		}
 	};
@@ -57,7 +57,7 @@ var wcd_loader = new function(){
 	};
 	
 	this.loadjQueryUI = function() {
-		if(typeof jQuery.ui!='undefined') return;
+		if(typeof jQuery.ui!='undefined' && typeof jQuery.ui.dialog!='undefined') return;
 		console.log('loading jQuery UI');
 		this.query++;
 		var self = this;
