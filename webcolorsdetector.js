@@ -30,7 +30,7 @@ var wcd_loader = new function(){
 			});
 			document.getElementsByTagName('head')[0].appendChild(n);
 			
-		}else if(typeof jQuery.ui=='undefined' && typeof jQuery.ui.dialog=='undefined')) {
+		}else if(typeof jQuery.ui=='undefined' && typeof jQuery.ui.dialog=='undefined') {
 			this.loadjQueryUI();
 		}
 	};
