@@ -2,9 +2,11 @@ var wcd_loader = new function(){
 	this.jqueryURL = "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js";
 	this.jqueryUiURL = "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js";
 	this.jqueryUiCssURL = "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/themes/black-tie/jquery-ui.css";
-	this.query = 0;
+	this.query = 2;
 	
 	this.init = function(){
+		var self = this;
+		
 		this.showFeedback('Loading WebColorsDetector, please wait...')
 
 		var jQueryNeeded = true;
@@ -12,14 +14,11 @@ var wcd_loader = new function(){
 			console.log('jquery version: '+jQuery.fn.jquery);
 		
 			var jqueryVersion = jQuery.fn.jquery.replace(/\D/g,'');
-			if(parseInt(jqueryVersion) > 143)jQueryNeeded = false; // works in 1.4.4,  not 1.3.2, 1.4.2
+			if(parseInt(jqueryVersion) > 183)jQueryNeeded = false; // works in 1.4.4,  not 1.3.2, 1.4.2
 		}
 		
 		if(jQueryNeeded){
 			console.log('loading jQuery 1.8.3');
-			this.query++;
-			var self = this;
-			
 			
 			var n=document.createElement('script');
 			n.setAttribute('type','text/javascript');
@@ -31,25 +30,30 @@ var wcd_loader = new function(){
 			document.getElementsByTagName('head')[0].appendChild(n);
 			
 		}else if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined') {
+			self.query--;
 			this.loadjQueryUI();
 		}
 	};
 	
 	this.showFeedback = function(text){
-		var l = document.createElement( 'div' );
-		l.style.position = 'absolute';
-		l.style.top = '0';
-		l.style.left = '0';
-		l.style.color = 'white';
-		l.style.padding = '5px 10px';
-		l.style.fontSize = '11px';
-		l.style.zIndex = '999999';
-		l.style.backgroundColor = '#333';
-		l.style.border = '1px solid #fff'
-		l.setAttribute( 'id', 'wcd_loader' );
-		l.innerHTML =text;
-		
-		document.getElementsByTagName('body')[0].insertBefore(l, document.body.childNodes[0] );
+		if(document.getElementById('wcd_loader') != null){
+			document.getElementById('wcd_loader').innerHTML = text;
+		}else{
+			var l = document.createElement( 'div' );
+			l.style.position = 'absolute';
+			l.style.top = '0';
+			l.style.left = '0';
+			l.style.color = 'white';
+			l.style.padding = '5px 10px';
+			l.style.fontSize = '11px';
+			l.style.zIndex = '999999';
+			l.style.backgroundColor = '#333';
+			l.style.border = '1px solid #fff'
+			l.setAttribute( 'id', 'wcd_loader' );
+			l.innerHTML =text;
+			
+			document.getElementsByTagName('body')[0].insertBefore(l, document.body.childNodes[0] );
+		}
 	};
 	
 	this.removeFeedback = function(){
@@ -57,9 +61,12 @@ var wcd_loader = new function(){
 	};
 	
 	this.loadjQueryUI = function() {
-		if(typeof jQuery.ui!='undefined' && typeof jQuery.ui.dialog!='undefined') return;
+		if(typeof jQuery.ui!='undefined' && typeof jQuery.ui.dialog!='undefined'){
+			this.query--;
+			return;
+		}
 		console.log('loading jQuery UI');
-		this.query++;
+		
 		var self = this;
 		
 		// load jquery ui css
@@ -68,14 +75,15 @@ var wcd_loader = new function(){
 		}else{
 			jQuery("head").append(jQuery('<link rel="stylesheet" href="'+this.jqueryUiCssURL+'" type="text/css" media="screen" />'));
 		}
-		
 		// load jquery ui js
 		jQuery.getScript(this.jqueryUiURL, function(data, textStatus, jqxhr) {
-			self.query--;
+			if(typeof jQuery.ui.dialog!='undefined') self.query--;
+			else self.showFeedback("Error while loading jQuery UI");
 		});
 	};
 	
 	this.done = function(){
+		console.log("done "+this.query)
 		if(this.query == 0){
 			this.removeFeedback();
 			return true;
@@ -244,7 +252,6 @@ var wcd = new function() {
 			});	
 	}
   };
-
 
   
  wcd.init();
