@@ -233,7 +233,7 @@ var wcd = new function() {
 						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">Border ('+border.length+')</h3>'+border.join("")+'</div> \
 						<div style="float: left;padding:10px"><h3 style="margin: 10px 0;">All ('+all.length+')</h3><div class="sortable">'+all.join("")+"</div></div>";
 
-		jQuery('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;z-index:99999999999999"><span class="md_loading" /></div>')
+		jQuery('<div id="wcd_dialog" style="font-family: Verdana, Arial, sans-serif;font-size: 13px;z-index:99999999999999;text-align:left"><span class="md_loading" /></div>')
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
