@@ -237,7 +237,7 @@ var wcd = new function() {
 			.appendTo("body")
 			.dialog({modal: true, 
 					resizable: false,
-					title: "WebColorsDetector 0.1",
+					title: "WebColorsDetector 1.0",
 					width: 800,
 					dialogClass: 'debugElement',
 					open: function(){
