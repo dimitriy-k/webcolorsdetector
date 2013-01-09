@@ -23,14 +23,14 @@ var wcd_loader = new function(){
 
 		var jQueryNeeded = true;
 		if(typeof jQuery!='undefined'){
-			console.log('jquery version: '+jQuery.fn.jquery);
+			this.log('jquery version: '+jQuery.fn.jquery);
 		
 			var jqueryVersion = jQuery.fn.jquery.replace(/\D/g,'');
 			if(parseInt(jqueryVersion) > 183)jQueryNeeded = false; // works in 1.4.4,  not 1.3.2, 1.4.2
 		}
 		
 		if(jQueryNeeded){
-			console.log('loading jQuery 1.8.3');
+			this.log('loading jQuery 1.8.3');
 			
 			var n=document.createElement('script');
 			n.setAttribute('type','text/javascript');
@@ -73,6 +73,11 @@ var wcd_loader = new function(){
 		}
 	};
 	
+	this.log = function(msg) {
+		if(typeof console != "undefined") 
+			console.log(msg)		
+	}
+	
 	this.removeFeedback = function(){
 		jQuery('#wcd_loader').remove();
 	};
@@ -82,7 +87,7 @@ var wcd_loader = new function(){
 			this.query--;
 			return;
 		}
-		console.log('loading jQuery UI');
+		this.log('loading jQuery UI');
 		
 		var self = this;
 		
@@ -100,7 +105,7 @@ var wcd_loader = new function(){
 	};
 	
 	this.done = function(){
-		console.log("done "+this.query)
+		this.log("loading "+this.query)
 		if(this.query == 0){
 			this.removeFeedback();
 			return true;
@@ -212,7 +217,7 @@ var wcd = new function() {
 				if(self.rgb2hex(jQuery(element).css("border-bottom-color")) == color)found[found.length] = "border-bottom-color";
 				if(self.rgb2hex(jQuery(element).css("border-left-color")) == color)found[found.length] = "border-left-color";
 				if(found.length > 0){
-					if(log)console.log(element);
+					if(log)wcd_loader.log(element);
 					
 					var result = found.join(", ");
 					result = result.replace("border-top-color, border-right-color, border-bottom-color, border-left-color", "border");
