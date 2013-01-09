@@ -37,7 +37,7 @@ var wcd_loader = new function(){
 			n.setAttribute('src',this.jqueryURL);
 			n.addEventListener('load', function (e) { 
 				//error handler
-				$(window).onerror(function(msg, url, line){
+				jQuery(window).onerror(function(msg, url, line){
 					_gaq.push(['_trackEvent',"error",msg+" LINE: "+line,url]);
 				});
 				
