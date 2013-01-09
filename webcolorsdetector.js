@@ -35,21 +35,32 @@ var wcd_loader = new function(){
 			var n=document.createElement('script');
 			n.setAttribute('type','text/javascript');
 			n.setAttribute('src',this.jqueryURL);
-			n.addEventListener('load', function (e) { 
-				//error handler
-				jQuery(window).error(function(msg, url, line){
-					_gaq.push(['_trackEvent',"error",msg+" LINE: "+line,url]);
+			if(n.attachEvent){
+				n.onload = n.onreadystatechange = function () { 
+					self.jqueryLoaded();
+				};
+			}else{
+				n.addEventListener('load', function (e) { 
+					self.jqueryLoaded();
 				});
-				
-				self.query--;
-				if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined')self.loadjQueryUI();
-			});
+			}
+			
 			document.getElementsByTagName('head')[0].appendChild(n);
 			
 		}else if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined') {
 			self.query--;
 			this.loadjQueryUI();
 		}
+	};
+	
+	this.jqueryLoaded = function(){
+		//error handler
+		jQuery(window).error(function(msg, url, line){
+			_gaq.push(['_trackEvent',"error",msg+" LINE: "+line,url]);
+		});
+				
+		this.query--;
+		if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined')this.loadjQueryUI();
 	};
 
 	this.showFeedback = function(text){
