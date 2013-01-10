@@ -23,7 +23,7 @@ var wcd_loader = new function(){
 
 		var jQueryNeeded = true;
 		if(typeof jQuery!='undefined'){
-			this.log('jquery version: '+jQuery.fn.jquery);
+			this.log('jQuery version: '+jQuery.fn.jquery);
 		
 			var jqueryVersion = jQuery.fn.jquery.replace(/\D/g,'');
 			if(parseInt(jqueryVersion) > 183)jQueryNeeded = false; // works in 1.4.4,  not 1.3.2, 1.4.2
@@ -47,9 +47,8 @@ var wcd_loader = new function(){
 			
 			document.getElementsByTagName('head')[0].appendChild(n);
 			
-		}else if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined') {
-			self.query--;
-			this.loadjQueryUI();
+		}else{
+			this.jqueryLoaded();
 		}
 	};
 	
@@ -61,7 +60,9 @@ var wcd_loader = new function(){
 				
 		this.query--;
 		if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined')this.loadjQueryUI();
+		else this.query--;
 	};
+
 
 	this.showFeedback = function(text){
 		if(document.getElementById('wcd_loader') != null){
