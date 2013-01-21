@@ -57,6 +57,12 @@ var wcd_loader = new function(){
 		jQuery(window).error(function(msg, url, line){
 			_gaq.push(['_trackEvent',"error",msg+" LINE: "+line,url]);
 		});
+		
+
+		if (jQuery.browser.msie){
+			this.showFeedback("Sorry, Internet Explorer not yet supported. Try a Webkit browser.");
+			return;
+		}	
 				
 		this.query--;
 		if(typeof jQuery.ui=='undefined' || typeof jQuery.ui.dialog=='undefined')this.loadjQueryUI();
