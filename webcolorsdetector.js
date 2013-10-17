@@ -59,7 +59,7 @@ var wcd_loader = new function(){
 		});
 		
 
-		if (jQuery.browser.msie){
+		if (navigator.appName == 'Microsoft Internet Explorer'){
 			this.showFeedback("Sorry, Internet Explorer not yet supported. Try a Webkit browser.");
 			return;
 		}	
