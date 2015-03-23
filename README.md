@@ -1,4 +1,4 @@
 WebColorsDetector
 =================
 
-http://dixkom.github.com/wcd
+http://dimitriy-k.github.com/wcd
